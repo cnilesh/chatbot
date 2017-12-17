@@ -1,5 +1,6 @@
 var restify = require('restify');
 var builder = require('botbuilder');
+var parseXlsx = require('excel');
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -18,5 +19,21 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
-    session.send("You said: %s", session.message.text);
+    readExcel(session.message.text,function (responseData) {
+        session.send("Your WBS Code for the current period is: %s", responseData);
+    });
+    
 });
+
+var readExcel = function (eid, callback) {
+    console.log(eid);
+    parseXlsx('wbs_format.xlsx', function (err, data) {
+        if (err)
+            return console.log(err);
+        for (var i = 0; i < data.length; i++) {
+            if (data[i][2] === eid) {
+                callback(data[i][7]+' for the project:'+ data[i][5]);
+            }
+        }
+    });
+}
