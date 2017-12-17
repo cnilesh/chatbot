@@ -28,11 +28,15 @@ var bot = new builder.UniversalBot(connector, function (session) {
 var readExcel = function (eid, callback) {
     console.log(eid);
     parseXlsx('wbs_format.xlsx', function (err, data) {
+        console.log(data);
         if (err)
             return console.log(err);
+        if (data.length === 0) {
+            callback('No data found');
+        }
         for (var i = 0; i < data.length; i++) {
             if (data[i][2] === eid) {
-                callback(data[i][7]+' for the project:'+ data[i][5]);
+                callback(data[i][7] + ' for the project:' + data[i][5]);
             }
         }
     });
