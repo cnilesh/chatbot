@@ -10,8 +10,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appId: '02b6fc65-b6d9-4965-b279-5af051073019',
+    appPassword: '=e|V-47@KZL@r=_c'
 });
 
 // Listen for messages from users 
@@ -19,6 +19,7 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
+    //session.send('Hi');
     readExcel(session.message.text,function (responseData) {
         session.send("Your WBS Code for the current period is: %s", responseData);
     });
@@ -27,15 +28,17 @@ var bot = new builder.UniversalBot(connector, function (session) {
 var readExcel = function (eid, callback) {
     console.log(eid);
     parseXlsx('./wbs_format.xlsx', function (err, data) {
-        console.log(data);
         if (err)
             return console.log(err);
         if (data.length === 0) {
             callback('No data found');
         }
+        console.log(data.length);
         for (var i = 0; i < data.length; i++) {
+            console.log(data[i][2]);
             if (data[i][2] === eid) {
                 callback(data[i][7] + ' for the project:' + data[i][5]);
+                break;
             }
         }
     });
