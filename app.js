@@ -22,12 +22,11 @@ var bot = new builder.UniversalBot(connector, function (session) {
     readExcel(session.message.text,function (responseData) {
         session.send("Your WBS Code for the current period is: %s", responseData);
     });
-    
-});
+ });
 
 var readExcel = function (eid, callback) {
     console.log(eid);
-    parseXlsx('wbs_format.xlsx', function (err, data) {
+    parseXlsx('./wbs_format.xlsx', function (err, data) {
         console.log(data);
         if (err)
             return console.log(err);
